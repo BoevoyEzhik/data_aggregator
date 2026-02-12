@@ -1,0 +1,15 @@
+[tool.black]
+line-length = 88
+target-version = ['py312']
+include = '\.pyi?$'
+extend-exclude = '''
+\.git
+|\.venv
+|build
+|dist
+'''
+
+[tool.mypy]
+ignore_missing_imports = true
+namespace_packages = true
+mypy_path = "."
