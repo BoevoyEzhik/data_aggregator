@@ -1,6 +1,7 @@
-from unittest.mock import patch
 import csv
 from io import StringIO
+from unittest.mock import patch
+
 import pytest
 
 from src.data_reader import DataReader
@@ -43,7 +44,9 @@ class TestReadAllFiles:
 
         reader = DataReader()
 
-        with pytest.raises(ValueError, match=r"Ошибка при чтении файла file1\.csv: test error"):
+        with pytest.raises(
+            ValueError, match=r"Ошибка при чтении файла file1\.csv: test error"
+        ):
             reader.read_all_files(["file1.csv"])
 
     def test_read_all_files_returns_dict(self):
@@ -70,10 +73,26 @@ class TestReadSingleFile:
     @patch("builtins.open")
     def test_read_single_file_success(self, mock_file):
         mock_data = [
-            {"country": "Germany", "year": "2020", "gdp": "3800000000000", "gdp_growth": "0.8",
-             "inflation": "1.5", "unemployment": "3.2", "population": "83000000", "continent": "Europe"},
-            {"country": "France", "year": "2020", "gdp": "2600000000000", "gdp_growth": "0.7",
-             "inflation": "1.1", "unemployment": "8.1", "population": "67000000", "continent": "Europe"}
+            {
+                "country": "Germany",
+                "year": "2020",
+                "gdp": "3800000000000",
+                "gdp_growth": "0.8",
+                "inflation": "1.5",
+                "unemployment": "3.2",
+                "population": "83000000",
+                "continent": "Europe",
+            },
+            {
+                "country": "France",
+                "year": "2020",
+                "gdp": "2600000000000",
+                "gdp_growth": "0.7",
+                "inflation": "1.1",
+                "unemployment": "8.1",
+                "population": "67000000",
+                "continent": "Europe",
+            },
         ]
         csv_content = self.create_mock_csv(mock_data)
 
@@ -81,7 +100,7 @@ class TestReadSingleFile:
 
         reader = DataReader()
 
-        with patch.object(reader, '_process_row') as mock_process_row:
+        with patch.object(reader, "_process_row") as mock_process_row:
             reader._read_single_file("dummy.csv")
 
             assert mock_process_row.call_count == 2
@@ -100,7 +119,7 @@ class TestProcessRow:
             "inflation": "1.5",
             "unemployment": "3.2",
             "population": "83000000",
-            "continent": "Europe"
+            "continent": "Europe",
         }
 
         reader._process_row(row)
@@ -125,7 +144,7 @@ class TestProcessRow:
             "inflation": "",
             "unemployment": "",
             "population": "",
-            "continent": "Asia"
+            "continent": "Asia",
         }
 
         reader._process_row(row)
@@ -146,7 +165,7 @@ class TestProcessRow:
             "inflation": "1.5",
             "unemployment": "3.2",
             "population": "83000000",
-            "continent": "Europe"
+            "continent": "Europe",
         }
 
         with pytest.raises(KeyError):
@@ -162,7 +181,7 @@ class TestProcessRow:
             "inflation": "1.5",
             "unemployment": "3.2",
             "population": "83000000",
-            "continent": "Europe"
+            "continent": "Europe",
         }
 
         with pytest.raises(ValueError, match=r"Ошибка преобразования данных в строке"):
@@ -178,7 +197,7 @@ class TestProcessRow:
             "inflation": "1.5",
             "unemployment": "3.2",
             "population": "83000000",
-            "continent": "Europe"
+            "continent": "Europe",
         }
 
         with pytest.raises(ValueError, match=r"Ошибка преобразования данных в строке"):
@@ -194,7 +213,7 @@ class TestProcessRow:
             "inflation": "4.0",
             "unemployment": "5.5",
             "population": "1380000000.0",  # Это вызовет ValueError
-            "continent": "Asia"
+            "continent": "Asia",
         }
 
         with pytest.raises(ValueError, match=r"Ошибка преобразования данных в строке"):
@@ -210,7 +229,7 @@ class TestProcessRow:
             "inflation": "4.0",
             "unemployment": "5.5",
             "population": "1380000000",
-            "continent": "Asia"
+            "continent": "Asia",
         }
 
         reader._process_row(row)
@@ -229,7 +248,7 @@ class TestProcessRow:
             "inflation": "1.5",
             "unemployment": "3.2",
             "population": "83000000",
-            "continent": "Europe"
+            "continent": "Europe",
         }
         row2 = {
             "country": "Germany",
@@ -239,7 +258,7 @@ class TestProcessRow:
             "inflation": "3.1",
             "unemployment": "3.1",
             "population": "83200000",
-            "continent": "Europe"
+            "continent": "Europe",
         }
 
         reader._process_row(row1)
@@ -260,12 +279,10 @@ class TestProcessRow:
             "inflation": "2.0",
             "unemployment": "2.8",
             "population": "126000000",
-            "continent": " Asia "
+            "continent": " Asia ",
         }
 
         reader._process_row(row)
 
         japan = reader.data["Japan"][0]
         assert japan["continent"] == "Asia"
-
-

@@ -35,7 +35,6 @@ def main() -> None:
             print(f"Отчёт {ReportClass.__name__} не содержит данных.")
             continue
 
-
         print(f"\n--- Отчёт: {ReportClass.__name__.replace('Report', '')} ---")
         print(
             tabulate(

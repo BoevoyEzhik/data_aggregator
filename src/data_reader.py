@@ -1,13 +1,15 @@
 import csv
 from collections import defaultdict
-from typing import Dict, List, DefaultDict
+from typing import DefaultDict, Dict, List, Iterator
+
+from src.reports.base import EconomicRecord
 
 
 class DataReader:
     def __init__(self):
-        self.data: DefaultDict[str, List[Dict]] = defaultdict(list)
+        self.data: DefaultDict[str, List[EconomicRecord]] = defaultdict(list)
 
-    def read_all_files(self, file_paths: List[str]) -> Dict[str, List[Dict]]:
+    def read_all_files(self, file_paths: List[str]) -> Dict[str, List[EconomicRecord]]:
         for file_path in file_paths:
             try:
                 self._read_single_file(file_path)
@@ -19,7 +21,7 @@ class DataReader:
 
     def _read_single_file(self, file_path: str) -> None:
         with open(file_path, "r", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
+            reader: Iterator[Dict[str, str]] = csv.DictReader(f)
 
             for row in reader:
                 self._process_row(row)
@@ -27,12 +29,14 @@ class DataReader:
     def _process_row(self, row: Dict[str, str]) -> None:
         try:
             country = row["country"].strip()
-            entry = {
+            entry: EconomicRecord = {
                 "year": int(row["year"]),
                 "gdp": float(row["gdp"]) if row["gdp"] else None,
                 "gdp_growth": float(row["gdp_growth"]) if row["gdp_growth"] else None,
                 "inflation": float(row["inflation"]) if row["inflation"] else None,
-                "unemployment": float(row["unemployment"]) if row["unemployment"] else None,
+                "unemployment": (
+                    float(row["unemployment"]) if row["unemployment"] else None
+                ),
                 "population": int(row["population"]) if row["population"] else None,
                 "continent": row["continent"].strip(),
             }
@@ -40,4 +44,6 @@ class DataReader:
         except KeyError as e:
             raise KeyError(f"Отсутствует ожидаемый столбец в данных: {e}")
         except ValueError as e:
-            raise ValueError(f"Ошибка преобразования данных в строке: {row}, ошибка: {e}")
+            raise ValueError(
+                f"Ошибка преобразования данных в строке: {row}, ошибка: {e}"
+            )

@@ -1,45 +1,46 @@
-# Анализ рейтинга брендов
+# Анализ экономических данных
 
-Скрипт для анализа данных о рейтингах товаров из CSV файлов.
+Скрипт для анализа макроэкономических показателей стран из CSV-файлов.
 
 ## Установка
+
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Для разработки (с тестами):
+Для запуска тестов:
 ```bash
-pip install -r dev.txt
+pip install -r requirements-test.txt
 ```
 
 ## Использование
 
 Основная команда:
 ```bash
-python main.py --files <путь_к_файлу1.csv> <путь_к_файлу2.csv> --report <тип_отчета>
+python main.py --files <путь_к_файлу1.csv> <путь_к_файлу2.csv> --report <тип_отчёта>
 ```
 
 ### Пример запуска
 
 ```bash
-python main.py --files products1.csv products2.csv --report average-rating
+python main.py --files economic1.csv economic2.csv --report average-gdp
 ```
 
 Вывод:
 ```
-+----+----------+----------+
-|    | brand    |   rating |
-|----+----------+----------|
-|  1 | apple    |     4.55 |
-|  2 | samsung  |     4.53 |
-|  3 | xiaomi   |     4.37 |
-+----+----------+----------+
+--- Отчёт: AverageGdp ---
+|    | country        |   avg_gdp |
+|----|----------------|-----------|
+|  1 | United States  |  23923.67 |
+|  2 | China          |  17810.33 |
+
+
 ```
 
 ### Доступные отчеты
 
-- `average-rating` — средний рейтинг по брендам (бренды сортируются по рейтингу)
+- `average-gdp` — среднее значение ВВП по странам (сортировка по убыванию)
 
 ## Запуск тестов
 
@@ -55,17 +56,25 @@ pytest tests/test_reports.py
 ```
 
 
-## Формат CSV файлов
+## Формат CSV-файлов
 
-CSV файлы должны содержать следующие колонки:
-- `name` — название товара
-- `brand` — бренд
-- `price` — цена
-- `rating` — рейтинг
+CSV-файлы должны содержать следующие колонки:
+- `country` — название страны
+- `year` — год
+- `gdp` — валовой внутренний продукт (в долларах)
+- `gdp_growth` — рост ВВП (%)
+- `inflation` — инфляция (%)
+- `unemployment` — уровень безработицы (%)
+- `population` — население
+- `continent` — континент
 
 Пример:
 ```csv
-name,brand,price,rating
-iphone 15 pro,apple,999,4.9
-galaxy s23 ultra,samsung,1199,4.8
+country,year,gdp,gdp_growth,inflation,unemployment,population,continent 
+Germany,2020,3800000000000,0.8,1.5,3.2,83000000,Europe 
+France,2020,2600000000000,0.7,1.1,8.1,67000000,Europe
 ```
+## Требования к данным
+
+- Поля `gdp`, `gdp_growth`, `inflation`, `unemployment`, `population` могут быть пустыми — они будут интерпретированы как `None`.
+- Пустые строки или строки без обязательных полей (`country`, `year`, `gdp`) вызовут ошибку.

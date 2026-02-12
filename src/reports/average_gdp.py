@@ -1,12 +1,10 @@
 from typing import Dict, List, Union
 
-from src.reports.base import BaseReport
+from src.reports.base import BaseReport, EconomicData
 
 
 class AverageGdpReport(BaseReport):
-    def generate(
-        self, data: Dict[str, List[Dict[str, Union[float, int, str]]]]
-    ) -> List[Dict[str, Union[str, float]]]:
+    def generate(self, data: EconomicData) -> List[Dict[str, Union[str, float]]]:
 
         result: List[Dict[str, Union[str, float]]] = []
 
@@ -17,10 +15,12 @@ class AverageGdpReport(BaseReport):
                 continue
 
             avg_gdp = sum(gdp_values) / len(gdp_values)
-            result.append({
-                "country": country,
-                "avg_gdp": round(avg_gdp, 2),
-            })
+            result.append(
+                {
+                    "country": country,
+                    "avg_gdp": round(avg_gdp, 2),
+                }
+            )
 
         result.sort(key=lambda x: x["avg_gdp"], reverse=True)
 
